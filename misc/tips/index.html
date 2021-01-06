@@ -1,0 +1,104 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>一些小东西</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/style/style.css"></head><body>
+<header class="header" id="header">
+    <div class="header-wrapper">
+        <div class="logo">
+            <h1><a href="/">OY's Home</a></h1>
+        </div>
+        <nav class="main-nav">
+            <ul class="menu">
+                <li class="menu-item">
+                    <a href="/" id="home">
+                        <span class="base-name">
+                            Home
+                        </span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/archives" id="archives">
+                        <span class="base-name">
+                            Archives
+                        </span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/categories" id="categories">
+                        <span class="base-name">
+                            Categories
+                        </span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="javascript:;" id="tags">
+                        <span class="base-name">
+                            Tags
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<article class="markdown-body"><h1>一些小东西</h1><h3>Git 常用命令</h3><h4>取消 commit</h4><pre><code>git reset --hard HEAD~1
+git push --force
+</code></pre><h4>配置 Git 代理</h4><pre><code>git config --global http.proxy 'socks5://127.0.0.1:1080'
+git config --global https.proxy 'socks5://127.0.0.1:1080'
+</code></pre><h3>在 vscode 中配置 LaTex</h3><p><!--more--></p><pre><code>  "latex-workshop.latex.recipes": [
+    {
+      "name": "xelatex",
+      "tools": [
+        "xelatex"
+      ]
+    },
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "xelatex",
+      "command": "xelatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ]
+    }
+  ],
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.latex.autoClean.run": "onBuilt",
+</code></pre><p>测试文档</p><pre><code>\documentclass{article}
+% \documentclass[a4paper]{report}
+% \usepackage[margin=2cm]{geometry}
+% \renewcommand{\thesection}{\arabic{section}}
+
+\usepackage{ctex}
+
+\author{OYMiss}
+\title{HelloWorld}
+\begin{document}
+\maketitle
+
+\section{Test}
+$$
+\int^{\infty}_{0}{x^ne^{-x}} \mathrm{d}x = n!
+$$
+
+\end{document}
+
+</code></pre><h3>在 macOS 上读写 NTFS 硬盘</h3><p>在 <code>/etc/fstab</code> 中添加下面内容，没有的话新建一个。</p><pre><code>LABEL=硬盘名称 none ntfs rw,auto,nobrowse
+</code></pre><p>重新加载，然后打开 <code>/Volumes</code> 就可以看到，也可以用下面命令创建一个快捷方式。</p><pre><code>sudo ln -s /Volumes ~/Desktop/Volumes
+</code></pre><h3>在 macOS 上将 PNG 图标转为 ICNS 图标</h3><p>macOS 上有些应用的图标太丑，如果想要更换 macOS 上应用的图标，需要有一个 ICNS 类型的图标，然后打开应用详情把图标放在原来的图标上就可以了。</p><p>下面命令将当前文件夹的 <code>pic.png</code> 转化为 <code>icon.icns</code>。</p><pre><code>mkdir tmp.iconset
+sips -z 16 16     pic.png --out tmp.iconset/icon_16x16.png
+sips -z 32 32     pic.png --out tmp.iconset/icon_16x16@2x.png
+sips -z 32 32     pic.png --out tmp.iconset/icon_32x32.png
+sips -z 64 64     pic.png --out tmp.iconset/icon_32x32@2x.png
+sips -z 128 128   pic.png --out tmp.iconset/icon_128x128.png
+sips -z 256 256   pic.png --out tmp.iconset/icon_128x128@2x.png
+sips -z 256 256   pic.png --out tmp.iconset/icon_256x256.png
+sips -z 512 512   pic.png --out tmp.iconset/icon_256x256@2x.png
+sips -z 512 512   pic.png --out tmp.iconset/icon_512x512.png
+sips -z 1024 1024   pic.png --out tmp.iconset/icon_512x512@2x.png
+iconutil -c icns tmp.iconset -o icon.icns
+rm -rf tmp.iconset
+</code></pre></article></body></html>

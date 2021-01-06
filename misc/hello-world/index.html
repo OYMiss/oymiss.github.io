@@ -1,0 +1,71 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Hexo 搭建博客</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/style/style.css"></head><body>
+<header class="header" id="header">
+    <div class="header-wrapper">
+        <div class="logo">
+            <h1><a href="/">OY's Home</a></h1>
+        </div>
+        <nav class="main-nav">
+            <ul class="menu">
+                <li class="menu-item">
+                    <a href="/" id="home">
+                        <span class="base-name">
+                            Home
+                        </span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/archives" id="archives">
+                        <span class="base-name">
+                            Archives
+                        </span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/categories" id="categories">
+                        <span class="base-name">
+                            Categories
+                        </span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="javascript:;" id="tags">
+                        <span class="base-name">
+                            Tags
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<article class="markdown-body"><h1>Hexo 搭建博客</h1><h3>数学公式</h3>\[e^{-j\omega t}
+\]<p>如果矩阵 \(A_{n \times n}\) 的秩为 \(n\)，那么...</p><h3>语法</h3><blockquote><p>有威尔逊的地方就有...</p></blockquote><p>今天，我吃了一顿<strong>饭</strong>。</p><ol><li>今天吃饭了</li><li>昨天也吃了</li></ol><pre><code>auto [u, v] = make_pair(1, 2);
+</code></pre><p><img src="/asset/hello-world/gaomu.jpg" width = "60%" height = "60%" alt="图片名称"/></p><p><!--more--></p><h3>安装步骤</h3><pre><code># 安装
+mkdir hexo && cd hexo
+npm install hexo-cli -g
+npm install hexo --save
+
+# 初始化
+mkdir oymiss.github.io && hexo init
+# git clone https://github.com/OYMiss/oymiss.github.io.git && cd oymiss.github.io
+cd oymiss.github.io
+npm install
+
+# 先安装 pandoc
+brew install pandoc
+# 自带引擎会对 `\\` 进行转义，需要更换引擎。
+npm uninstall hexo-renderer-marked --save
+npm install hexo-renderer-pandoc --save
+
+# 更改 /nunjucks/src/lexer.js 文件
+hexo clean && hexo s
+
+# 发布
+npm install hexo-deployer-git --save
+hexo d
+</code></pre><h3>错误</h3><h4>nunjucks 生成错误</h4><p>改 <code>node_modules/nunjucks/src/lexer.js</code> 部分改为</p><pre><code>var VARIABLE_START = '{~';
+var VARIABLE_END = '~}';
+</code></pre></article></body></html>
