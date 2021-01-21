@@ -31,9 +31,9 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="javascript:;" id="tags">
+                    <a href="/about" id="about">
                         <span class="base-name">
-                            Tags
+                            About
                         </span>
                     </a>
                 </li>
@@ -41,34 +41,236 @@
         </nav>
     </div>
 </header>
-<article class="homepage-body"><div class="markdown-body limit-height"><h1>Hexo 搭建博客</h1><h3>数学公式</h3>\[e^{-j\omega t}
-\]<p>如果矩阵 \(A_{n \times n}\) 的秩为 \(n\)，那么...</p><h3>语法</h3><blockquote><p>有威尔逊的地方就有...</p></blockquote><p>今天，我吃了一顿<strong>饭</strong>。</p><ol><li>今天吃饭了</li><li>昨天也吃了</li></ol><pre><code>auto [u, v] = make_pair(1, 2);
-</code></pre><p><img src="/asset/hello-world/gaomu.jpg" width = "60%" height = "60%" alt="图片名称"/></p><p><!--more--></p><h3>安装步骤</h3><pre><code># 安装
-mkdir hexo && cd hexo
-npm install hexo-cli -g
-npm install hexo --save
-
-# 初始化
-mkdir oymiss.github.io && hexo init
-# git clone https://github.com/OYMiss/oymiss.github.io.git && cd oymiss.github.io
-cd oymiss.github.io
-npm install
-
-# 先安装 pandoc
-brew install pandoc
-# 自带引擎会对 `\\` 进行转义，需要更换引擎。
-npm uninstall hexo-renderer-marked --save
-npm install hexo-renderer-pandoc --save
-
-# 更改 /nunjucks/src/lexer.js 文件
-hexo clean && hexo s
-
-# 发布
-npm install hexo-deployer-git --save
-hexo d
-</code></pre><h3>错误</h3><h4>nunjucks 生成错误</h4><p>改 <code>node_modules/nunjucks/src/lexer.js</code> 部分改为</p><pre><code>var VARIABLE_START = '{~';
-var VARIABLE_END = '~}';
-</code></pre><a class="fill-link" href="/misc/hello-world"></a><div class="hide-article-box"></div></div><div class="markdown-body limit-height"><h1>一些小东西</h1><h3>Git 常用命令</h3><h4>取消 commit</h4><pre><code>git reset --hard HEAD~1
+<article class="homepage-body"><div class="markdown-body limit-height"><h1>常见层结构</h1><p>所有向量默认指的是列向量，并且记 \(A_i \in \mathbb R^m\) 表示矩阵 \(A\in \mathbb R^{m \times n}\) 的第 \(i\) 个列向量，第 \(j\) 个行元素组成的向量（不是行向量，所以维度并不是 \(\mathbb R^{1\times n}\)）表示为 \((A^T)_j \in \mathbb R^n\)。</p><h3>Affine 层</h3><h4>公式</h4>\[\begin{aligned}
+    Y &= XW + B \\
+    Y_{i,l} &= \sum_k W_{k,l} X_{i,k} + b_l \\
+\end{aligned}
+\]<p>其中 \(X \in \mathbb R^{N \times D}\)，\(W \in \mathbb R^{D \times M}\)，\(B \in \mathbb R^{N \times M}\)，\(b \in \mathbb R^{M}\)，\(B =\begin{bmatrix}b^T \\\vdots \\b^T\end{bmatrix}\)，\(Y \in \mathbb R^{N \times M}\)。</p><p><!-- more --></p><h4>导数</h4><p>求对 \(b\) 的导数：</p>\[\frac{\partial Y_{i,l}}{\partial b_l} = 1
+\]\[\begin{aligned}
+\frac{\partial \ell}{\partial b_l} &=\sum_{i} \frac{\partial \ell}{\partial Y_{i,l}}\frac{\partial Y_{i,l}}{\partial b_l} \\
+&= \sum_{i} dY_{i,l} \\
+&= {dY}_{l} \cdot \begin{bmatrix} 1 \\ \vdots\\ 1 \end{bmatrix}
+\end{aligned}
+\]\[\frac{\partial \ell}{\partial b} = dY^T \begin{bmatrix}
+1 \\
+\vdots\\
+1
+\end{bmatrix} = (\begin{bmatrix}
+1 & \cdots & 1
+\end{bmatrix} dY)^T
+\]<p>求对 \(W\) 的导数：</p>\[\frac{\partial Y_{i,l}}{\partial W_{k, l}} = X_{i,k}
+\]\[\begin{aligned}
+\frac{\partial \ell}{\partial W_{k,l}}
+&= \sum_{i}\frac{\partial \ell}{\partial Y_{i,l}} \frac{\partial Y_{i,l}}{\partial W_{k, l}} \\
+&= \sum_{i}\frac{\partial \ell}{\partial Y_{i,l}} X_{i,k} \\
+&= X_{k} \cdot dY_{l}
+\end{aligned}
+\]\[\frac{\partial \ell}{\partial W} = X^TdY
+\]<p>求对 \(X\) 的导数：</p>\[\frac{\partial Y_{i,l}}{\partial X_{i,k}} = W_{k,l}
+\]\[\begin{aligned}
+\frac{\partial \ell}{\partial X_{i, k} } &= \sum_l \frac{\partial \ell}{\partial Y_{i,l}} \frac{\partial Y_{i,l}}{\partial X_{i,k}} \\
+&= \sum_l \frac{\partial \ell}{\partial Y_{i,l}} W_{k, l} \\
+&= (dY^T)_i \cdot (W^T)_k
+\end{aligned}
+\]\[\frac{\partial \ell}{\partial X } = dY W^T
+\]<h3>ReLU 层</h3><h4>公式</h4>\[\begin{aligned}
+Y &= \max(0, X)\\
+Y_{i, j} &= \max(0, X_{i, j})
+\end{aligned}
+\]<h4>导数</h4>\[\frac{\partial Y_{i,j}} {\partial X_{i, j}} = 1\{ X_{i, j} > 0 \}
+\]\[\begin{aligned}
+\frac{\partial \ell}{\partial X_{i, j}} &= \frac{\partial \ell}{\partial Y_{i,j}} \frac{\partial Y_{i,j}} {\partial X_{i, j}} \\
+&= \frac{\partial \ell}{\partial Y_{i,j}}1\{ X_{i, j} > 0 \}\\
+\end{aligned}
+\]<h3>SVM 损失</h3><h4>公式</h4>\[\begin{aligned}
+L &= \sum_i L_i \\
+L_i &= \sum_{j\neq y_i} \max(0, x_j - x_{y_i} + \Delta) \\
+\text{margin}_{i, j} &=
+\begin{cases} 0 & \text{when $j = y_i$}\\
+x_j - x_{y_i} + \Delta & \text{when $x_j - x_{y_i} + \Delta > 0$} \\
+0 & \text{when $x_j - x_{y_i} + \Delta \le 0$}
+\end{cases} \\
+L &= \sum_{i, j} \text{margin}_{i, j}
+\end{aligned}
+\]<p>其中 \((X^T)_i = x\)，\(X\in \mathbb R^{N \times D}\)。</p><h4>导数</h4><p>先写出 \(\text{margin}\) 的导数：</p>\[\frac{\partial \text{margin}_{i,j}}{\partial x_k} =
+\begin{cases}
+1 & k = j \\
+-1 & k = y_i \\
+\end{cases} \text{ when margin}_{i,j} > 0 \\
+\]<p>对于 \(k = y_i\) 的情况下：</p>\[\begin{aligned}
+\frac{\partial L_i}{\partial X_{i,y_{i}}} &= \frac{\partial L_i}{\partial x_{y_i}} \\
+&= \sum_j\frac{\partial \text{margin}_{i,j}}{\partial x_{y_i}} \\
+&= -\sum_j 1\{\text{margin}_{i,j} > 0\}\\
+\end{aligned} \\
+\]<p>对于 \(k \ne y_i\) 的情况下：</p>\[\begin{aligned}
+\frac{\partial L_i}{\partial X_{i,k}} &= \frac{\partial L_i}{\partial x_k} \\
+&= \sum_j\frac{\partial \text{margin}_{i,j}}{\partial x_{k}} \\
+&=  1\{\text{margin}_{i,k} > 0\} \\
+\end{aligned} \\
+\]<h3>Softmax 损失</h3><h4>公式</h4>\[\begin{aligned}
+    L &= \sum_i L_i \\
+    L_i &= -\log\left(\frac{e^{x_{y_i}}}{ \sum_j e^{x_j} }\right) \\
+    L_i &= -x_{y_i} + \log\sum_j e^{x_j}
+\end{aligned}
+\]<p>其中 \((X^T)_i = x\)，\(X\in \mathbb R^{N \times D}\)。</p><h4>导数</h4>\[\frac{\partial L_i}{\partial X_{i,k}} = \frac{\partial L_i}{\partial x_k} = -1\{k = y_i\} + \frac{e^{x_k}}{\sum_j e^{x_j}}
+\]<blockquote><p>计算出 \(e^{x_k} / \sum_j e^{x_j}\) 之后，就可以求出 \(\ell\) 和 \(dX\)。</p></blockquote><h3>Batch Normalization 层</h3><h4>公式</h4>\[\begin{aligned}
+    \mu &= \frac{1}{m} \sum_{i=1}^m x_i \\
+    \sigma^2 &= \frac{1}{m} \sum_{i=1}^m (x_i - \mu)^2 \\
+    \hat x_i &= \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}} \\
+    y_i &= \gamma \hat x_i + \beta = \text{BN}_{\gamma, \beta}(x_i)
+\end{aligned}
+\]<p>需要注意，这里的要训练的参数为 \(\gamma\) 和 \(\beta\)。</p><h4>导数</h4>\[\begin{aligned}
+\frac{\partial \ell}{\partial \hat x_i}
+&= \frac{\partial \ell}{\partial y_i} \gamma \\
+\frac{\partial \ell}{\partial \sigma^2} &= \sum_{i=1}^{m} \frac{\partial \ell}{\partial \hat x_i} (x_i - \mu)(-\frac{1}{2})(\sigma^2 + \epsilon)^{-\frac{3}{2}} \\
+\frac{\partial \ell}{\partial \mu} &= \frac{\partial \ell}{\partial \sigma^2}(-\frac{2}{m} )\sum_{i=1}^m (x_i - \mu) + \sum_{i=1}^{m} \frac{\partial \ell}{\partial \hat x_i} \frac{-1}{\sqrt{\sigma^2 + \epsilon}} \\
+\frac{\partial \ell}{\partial x_i} &= \frac{\partial \ell}{\partial \hat x_i} \frac{1}{\sqrt{\sigma^2 + \epsilon}} + \frac{\partial \ell}{\partial \sigma^2} \frac{2}{m} (x_i - \mu) + \frac{\partial \ell}{\partial \mu} \frac{1}{m} \\
+\frac{\partial \ell}{\partial \gamma} &= \sum_{i=1}^m \frac{\partial \ell}{\partial y_i}\hat x_i \\
+\frac{\partial \ell}{\partial \beta} &= \sum_{i=1}^m \frac{\partial \ell}{\partial y_i}1 \\
+\end{aligned}
+\]<p>如果把 \(\text{BN}\) 层分为多层，然后计算每层的导数：</p>\[\begin{aligned}
+\mu &= \frac{1}{m} \sum_{i=1}^m x_i \\
+v &= \frac{1}{m} \sum_{i=1}^m (x_i - \mu)^2 \\
+\sigma &= \sqrt{v + \epsilon} \\
+\hat x_i &= \frac{x_i - \mu}{\sigma} \\
+\end{aligned}
+\]<p>\(\hat x_i \to \sigma, \mu\) 过程：</p>\[\begin{aligned}
+\frac{\partial \ell}{\partial \sigma} &= \sum_i \frac{\partial \ell}{\partial \hat x_i} \frac{ x_i - \mu }{-\sigma^2} \\
+\frac{\partial \ell}{\partial \mu} &= \sum_i \frac{\partial \ell}{\partial \hat x_i} \frac{ -1 }{\sigma} \\
+\frac{\partial \ell}{\partial x_i} &= \frac{\partial \ell}{\partial \hat x_i} \frac{ 1 }{\sigma} \\
+\end{aligned}
+\]<p>\(\sigma \to v\) 过程：</p>\[\frac{\partial \ell }{\partial v} = \frac{\partial \ell}{\partial \sigma} \frac{1}{2\sqrt{v + \epsilon}} = \frac{\partial \ell}{\partial \sigma} \frac{1}{2\sigma} \\
+\]<p>\(v \to x, \mu\) 过程：</p>\[\begin{aligned}
+\frac{\partial \ell}{\partial x_i} &= \frac{\partial \ell}{\partial v} \frac{2}{m} (x_i - \mu) \\
+\frac{\partial \ell}{\partial \mu} &= \frac{\partial \ell}{\partial v} (-\frac{2}{m}) \sum_i (x_i - \mu) \\
+\end{aligned}
+\]<p>\(\mu \to x\) 过程：</p>\[\frac{\partial \ell }{\partial x_i} = \frac{\partial \ell }{\partial \mu} \frac{1}{m}
+\]<h3>Dropout 层</h3><h4>公式</h4>\[y = x \frac{1\{a \ge p\}}{p}
+\]<p>其中 \(a\) 是 \((0, 1)\) 的随机数。如果不除以 \(p\) 会导致输出的均值与输入均值相差 \(p\) 倍。</p><h4>导数</h4>\[\begin{aligned}
+\frac{\partial \ell}{\partial x}
+&= \frac{\partial \ell}{\partial y} \frac{\partial y}{\partial x} \\
+&= \frac{\partial \ell }{\partial y} \frac{1\{a \ge p\}}{p}
+\end{aligned}
+\]<h3>卷积层</h3><h4>公式</h4>\[Y_{i,j, k, l} = \sum_c \sum_{a, b} X_{i,c,ks + a,ls + b} W_{j,c,a,b} + b_j
+\]<p>\(s\) 为 \(W\) 移动的步长，其中 \(X \in \mathbb R^{N \times C \times H \times W}\)，\(W \in \mathbb R^{F \times C \times H_w \times W_w}\)，\(Y \in \mathbb R^{N \times C \times H' \times W'}\)，并有 \(H' = 1 + (H - H_w) / s, W' = 1 + (W - W_w) / s\)。</p><p>利用 <code>numpy</code> 的函数：</p>\[Y_{i,j,k,l} = \sum_c \text{np.sum}(X^{(k, l)}_{i,c} * W_{j,c}) + b_j
+\]<blockquote><p>这里 \(*\) 是 element-wise multiplication。</p></blockquote><p>为了方便计算，令 \(X^{(k, l)}_{i,c,a,b} = X_{i,c,ks + a,ls + b}\)，这里 \(X^{(k, l)}_{i,c}\) 表示在矩阵 \(X_{i,c}\) 中左上角坐标为 \((ks, ls)\)，右下角坐标为 \((ks + H_w - 1, ls+W_w - 1)\) 的子矩阵。</p><p>因为输入数据为维度为 \(\mathbb R^{N \times C \times H \times W}\)，卷积层的 Normalization 也与通常的不太一样。</p><p>下图展示了四种 Normalization 对卷积层的处理方式：</p><p><img src="/asset/common-layers/all-norms.svg" width = "100%" height = "100%" alt="all-norms"/></p><blockquote><p>计算的技巧是将维度转化为二维，过程与 Batch Normalization 几乎一样。</p></blockquote><p>对于 CNN 来说，Group Normalization 既拥有 Layer Normalization 与 batch size 无关的性质又与  Batch Normalization 效果差不多。</p><h4>导数</h4><p>首先求各自偏导数：</p>\[\begin{aligned}
+\frac{\partial Y_{i,j,k,l}}{\partial X^{(k, l)}_{i,c}} &= W_{j,c} \\
+\frac{\partial Y_{i,j,k,l}}{\partial W_{j,c}} &= X^{(k, l)}_{i,c} \\
+\frac{\partial Y_{i,j,k,l}}{\partial b_j} &= 1\\
+\end{aligned}
+\]<p>然后求损失函数的导数：</p>\[\begin{aligned}
+\frac{\partial \ell}{\partial X^{(k, l)}_{i,c}}
+&= \sum_j \frac{\partial \ell}{\partial Y_{i, j, k, l}} \frac{\partial Y_{i, j, k, l}}{\partial X^{(k, l)}_{i,c}} \\
+&= \sum_j \frac{\partial \ell}{\partial Y_{i, j, k, l}} W_{j,c} \\
+\frac{\partial \ell}{\partial W_{j,c}}
+&= \sum_i \sum_{k,l} \frac{\partial \ell}{\partial Y_{i, j, k, l}} \frac{\partial Y_{i, j, k, l}}{\partial W_{j,c}} \\
+&= \sum_i \sum_{k,l} \frac{\partial \ell}{\partial Y_{i, j, k, l}} X^{(k, l)}_{i,c} \\
+\frac{\partial \ell}{\partial b_j}
+&= \sum_i \sum_{k,l} \frac{\partial \ell}{\partial Y_{i, j, k, l}} \frac{\partial Y_{i, j, k, l}}{\partial b_{j}} \\
+&= \sum_i \sum_{k,l} \frac{\partial \ell}{\partial Y_{i, j, k, l}}
+\end{aligned}
+\]<h3>Max-Pooling 层</h3><h4>公式</h4>\[Y_{i,c,k,l} =  \max_{a,b} X_{i,c,ks + a,ls + b}
+\]<p>为了方便计算，令 \(X^{(k, l)}_{i,c,a,b} = X_{i,c,ks + a,ls + b}\)，这里 \(X^{(k, l)}_{i,c}\) 表示在矩阵 \(X_{i,c}\) 中左上角坐标为 \((ks, ls)\)，右下角坐标为 \((ks + H_p - 1, ls+W_p - 1)\) 的子矩阵。</p><h4>导数</h4>\[\begin{aligned}
+\frac{\partial \ell}{\partial X^{(k, l)}_{i,c,a,b}}
+&= \frac{\partial \ell}{\partial Y_{i, c, k, l}} \frac{\partial Y_{i, c, k, l}}{\partial X^{(k, l)}_{i,c,a,b}} \\
+&= \frac{\partial \ell}{\partial Y_{i, j, k, l}} 1\{ (a,b) = \arg \max(X^{(k, l)}_{i,c})\}
+\end{aligned}
+\]<p>[1] <a href="http://cs231n.stanford.edu/">CS231n: Convolutional Neural Networks for Visual Recognition</a></p><p>[2] <a href="https://arxiv.org/abs/1502.03167">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</a></p><p>[3] <a href="https://arxiv.org/abs/1607.06450">Layer Normalization</a></p><p>[4] <a href="https://arxiv.org/abs/1803.08494">Group Normalization</a></p><a class="fill-link" href="/ml/cs231n/common-layers"></a><div class="hide-article-box"></div></div><div class="markdown-body limit-height"><h1>用线性代数的眼光来看离散傅立叶变换</h1><p>如果 \(x\) 和 \(c\) 都是长度为 \(n\) 的向量，那么它们循环卷积的结果 \(y\) 就有</p>\[y_k = (x \otimes c)_k = \sum_{i=0}^{n-1} x_i c_{k-i}
+\]<blockquote><p>其中 \(c_{k-i}\) 代表循环移位。</p></blockquote><p>将 \(c\) 的循环移位写成矩阵的形式</p>\[C=
+\begin{bmatrix}
+c_0     & c_{n-1} & \dots  & c_{2} & c_{1}  \\
+c_{1} & c_0    & c_{n-1} &         & c_{2}  \\
+\vdots  & c_{1}& c_0    & \ddots  & \vdots   \\
+c_{n-2}  &        & \ddots & \ddots  & c_{n-1}   \\
+c_{n-1}  & c_{n-2} & \dots  & c_{1} & c_0 \\
+\end{bmatrix}
+\]<p><!--more--></p><p>于是就有</p>\[y = Cx
+\]<p>举个例子：</p>\[\begin{bmatrix}
+16 \\
+14 \\
+16 \\
+14 \\
+\end{bmatrix}
+=\begin{bmatrix}
+1 & 4 & 3 & 2 \\
+2 & 1 & 4 & 3 \\
+3 & 2 & 1 & 4 \\
+4 & 3 & 2 & 1 \\
+\end{bmatrix}
+\begin{bmatrix}
+1 \\
+2 \\
+1 \\
+2 \\
+\end{bmatrix}
+\]<p>其中 \(C\) 可以用另一种方式表示：</p>\[C=f(P)=c_0I+c_1P+c_2P^2+\ldots+c_{n-1}P^{n-1}
+\]<p>\(P\) 矩阵是一个置换矩阵，也被称作循环矩阵。</p>\[P=
+\begin{bmatrix}
+ 0&0&\ldots&0&1\\
+ 1&0&\ldots&0&0\\
+ 0&\ddots&\ddots&\vdots&\vdots\\
+ \vdots&\ddots&\ddots&0&0\\
+ 0&\ldots&0&1&0
+\end{bmatrix}
+\]<p>它可以表示为</p>\[\begin{pmatrix}
+   0 & I_{n-k} \\
+   I_k & 0
+\end{pmatrix}
+\]<p>可以得到 \(\vert P - \lambda I_n\vert = \lambda^n - 1\)，也可以通过 \(P^n = I\) 来得到 \(\lambda^n = 1\)。根据 \(e^{-j2\pi k} = 1\)，解出来得到 \(\lambda_k = e^{\frac{-j2\pi k}{n}} = \omega^k\)，计算可以得到 \(P\alpha_k = \omega^k(\alpha_{k(n-1)}, \alpha_{k(0)}, \cdots, \alpha_{k(n-3)}, \alpha_{k(n-2)})^T\)。</p><blockquote><p>这里不明白 \(\omega = e^{-j2\pi/n}\)，还是 \(\omega = e^{j2\pi/n}\)，感觉是一样的。</p></blockquote><p>从而有 \(\alpha_{k(i)} = \omega^k\alpha_{k(i-1)}\) 前一项乘以 \(\omega^{k}\) 等于后一项，最后一项乘以 \(\omega^{k}\) 得到第一项。如果 \(\alpha_{k} = (1, \omega^{k}, \omega^{2k}, \cdots, \omega^{(n-1)k})^T\) 就正好满足，其中有 \(\omega^{kn}=\omega^{k0}=1\) 。</p><p>可以得到 \(P\) 的特征向量组成的矩阵：</p>\[F = \begin{bmatrix}
+1&1&1&1&\cdots &1 \\
+1&\omega&\omega^2&\omega^3&\cdots&\omega^{n-1} \\
+1&\omega^2&\omega^4&\omega^6&\cdots&\omega^{2(n-1)}\\ 1&\omega^3&\omega^6&\omega^9&\cdots&\omega^{3(n-1)}\\
+\vdots&\vdots&\vdots&\vdots&\ddots&\vdots\\
+1&\omega^{n-1}&\omega^{2(n-1)}&\omega^{3(n-1)}&\cdots&\omega^{(n-1)(n-1)}
+\end{bmatrix}
+\]<p>\(C\) 矩阵的特征向量也是 \(\alpha_k\)，但是特征值变为</p>\[\begin{aligned}
+\lambda_k^* &= c_0 + c_1\lambda_k + c_2\lambda_k^2 + \cdots + c_{n-1}\lambda_k^{n-1} \\
+&= (c_0, c_1, \cdots, c_{n-1})^T(1, \lambda_k^1, \lambda_k^2, \cdots, \lambda_k^{n-1}) \\
+&= (c_0, c_1, \cdots, c_{n-1})^T(1, \omega^{k}, \omega^{2k}, \cdots, \omega^{(n-1)k}) \\
+&= (c_0, c_1, \cdots, c_{n-1})^T\alpha_{k}
+\end{aligned}
+\]<p>可以得到特征值组成的向量为 \(Fc\)，将 \(C\) 对角化，得到：</p>\[C = F^{-1}diag(Fc)F
+\]<p>这时候如果将 \(y = Cx\) 中的 \(x\) 投影到 \(F\) 列（行）空间里，也就是 \(C\) 的特征向量张成的空间，可以得到 \(y\) 在这个空间中的坐标。</p><p>如果将 \(x\) 和 \(y\) 也写成类似于 \(C\) 的循环矩阵，可以得到：</p>\[Y = CX
+\]<p>然后做对角化可以得到：</p>\[\begin{aligned}
+F^{-1}diag(Fy)F
+&= F^{-1}diag(Fc)F F^{-1}diag(Fx)F \\
+&= F^{-1}diag(Fc)diag(Fx)F
+\end{aligned}
+\]<p>于是可以得到卷积定理：</p>\[\begin{aligned}
+Fy
+&= Fc \times Fx \\
+&= F(c \otimes x)
+\end{aligned}
+\]<blockquote><p>这里 \(\times\) 表示 element-wise multiplication。</p></blockquote><p>这就是著名的卷积定理，时域卷积对应着频域的乘积，而频域是向量构成的循环矩阵的特征值。</p><p>[1] <a href="https://ocw.mit.edu/courses/mathematics/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/">Matrix Methods in Data Analysis, Signal Processing, and Machine Learning</a></p><p>[2] <a href="https://en.wikipedia.org/wiki/Circulant_matrix">Circulant matrix</a></p><p>[3] <a href="https://en.wikipedia.org/wiki/Discrete_Fourier_transform">Discrete Fourier transform</a></p><p>[4] <a href="https://en.wikipedia.org/wiki/Circular_convolution">Circular convolution</a></p><a class="fill-link" href="/signal/explain-dft-by-linear-algebra"></a><div class="hide-article-box"></div></div><div class="markdown-body limit-height"><h1>矩阵的广义逆</h1><h3>定义</h3><p>对于一个 \(m \times n\) 的实矩阵 \(A\)，\(A^+\) 应该满足下面四个条件：</p><ol><li>\(AA^+A = A\)</li><li>\(A^+AA^= A^+\)</li><li>\((AA^+)^T = AA^+\)</li><li>\((A^+A)^T = A^+A\)</li></ol><p>如果 \(A\) 列线性无关，则有：</p>\[A^+ = (A^TA)^{-1}A^T
+\]<p>称为左逆，并有 \(A^+A = I\)。</p><p><!--more--></p><p>如果 \(A\) 行线性无关，则有：</p>\[A^+ = A^T(AA^T)^{-1}
+\]<p>称为右逆，并有 \(AA^+ = I\)。</p><h3>几何解释</h3><p>对于一个线性方程组 \(Ax = y\)，\(A_{m \times n}\) 矩阵是一个 \(\mathbb{R}^n \to \mathbb{R}^m\) 的线性变换。需要解出 \(x^* \in \mathbb{R}^n\) 使得 \(Ax^* = y\)，可以通过广义逆求出 \(x^* = A^+y\)，相当于 \(x^* = A^+Ax^*\)，这里的 \(Ax^*\) 也一定在 \(A\) 的列空间中。</p><p>如果方程 \(Ax = y\) 无解，即找不到一个 \(x^*\) 使得 \(Ax^* = y\)，将 \(y\) 投影到 \(A\) 的列空间上并得到 \(y'\)，这样方程才有解，即 \(Ax^* = y'\)。</p><p>根据 \(A\) 的向量子空间的性质，\(C(A)\) 与 \(N(A^T)\) 是正交的，可以用这两个空间里面的向量张成整个 \(\mathbb{R}^m\)。一定能将 \(y_m\) 分解为 \(y_m = P_{C(A)}(y) + P_{N(A^T)}(y) = y' + y_0\)。可以得到</p>\[A^Ty = A^Ty' + A^Ty_0 = A^Ty'
+\]<p>其中 \(y'\) 可以写成 \(Ax^*\)，可以得到 \(A^Ty = A^TAx^*\)，如果 \(A^TA\) 可以逆，即 \(R(A) = n\)，则有</p>\[x^* = (A^TA)^{-1}A^Ty
+\]<p>其中，\((A^TA)^{-1}A^T\) 叫做 Moore-Penrose 广义逆。</p><h3>求解</h3><blockquote><p>如果 \(A^{-1}\) 存在，那么 \(A^+ = A^{-1}\)。</p></blockquote><p>将 \(A\) 进行 SVD 分解即 \(A = U\Sigma V^T\)，就有 \(A^+ = V\Sigma^+U^T\)。</p><p>其中 \(\Sigma^+\) 就是将 \(\Sigma\) 转置一下然后将 \(\sigma_i\) 变为 \(1/\sigma_i\)。</p><p>[1] <a href="https://ocw.mit.edu/courses/mathematics/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/">Matrix Methods in Data Analysis, Signal Processing, and Machine Learning</a></p><p>[2] <a href="https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse">Moore–Penrose inverse</a></p><p>[3] <a href="http://massimozanetti.altervista.org/files/mydocs/geometricalMeaningMoorePenrose.pdf">Geometrical meaning of the Moore-Penrose pseudo inverse</a></p><a class="fill-link" href="/math/pseudoinverse"></a><div class="hide-article-box"></div></div><div class="markdown-body limit-height"><h1>奇异值分解与主成分分析</h1><h3>奇异值分解（SVD）</h3><p>如果矩阵 \(A_{m\times n}\) 不能够进行特征值分解，要考虑使用<strong>奇异值分解（singular value decomposition，SVD）</strong> 化成：</p>\[A = U\Sigma V^T
+\]<p>其中，\(U_{m\times m}\) 和 \(V_{n\times n}\) 都是正交矩阵，\(\Sigma_{m\times n}\) 是一个矩形对角矩阵 （rectangular diagonal matrices），并且 \(\Sigma\) 主对角线上的元素都是非负的，记作 \(\sigma_i\)。</p>\[AA^T = U\Sigma V^T V\Sigma^T U^T = U \Sigma\Sigma^T U^T
+\]<p>其中 \(AA^T\) 是对称矩阵，一定能够对角化。</p><p><!--more--></p><p>\(U\) 被称作 \(A\) 的<strong>左奇异向量 （left-singular vectors）</strong>，它是 \(AA^T\) 的特征向量的一个集合。</p><p>\(V\) 被称作 \(A\) 的<strong>右奇异向量 （right-singular vectors）</strong>，它是 \(A^TA\) 的特征向量的一个集合。</p><p>\(AA^T\) 与 \(A^TA\) 拥有同样的特征值，于是 \(\sigma_i^2\) 是 \(AA^T\) 的特征值。</p><p>相对于特征值分解中 \(Sv_i = \lambda v_i\)，奇异值分解有：</p>\[Av_i = \sigma_i u_i \qquad i = 1, \ldots, \min(m, n)
+\]<p>可以把矩阵 \(A\) 看作是一个变换，将 \(\mathbb{R}^m\) 变换到 \(\mathbb{R}^n\)，其中 \(\mathbb{R}^m\) 的基向量为 \(u_i\)，\(\mathbb{R}^n\) 的基向量为 \(v_i\)。</p><h3>主成分分析（PCA）</h3><p><strong>主成分分析（Principal components analysis，PCA）</strong> 是一种统计分析、简化数据集的方法。它利用正交变换来对一系列可能相关的变量的观测值进行线性变换，从而投影为一系列线性不相关变量的值，这些不相关变量称为主成分（Principal Components）。</p><p>用矩阵表示就是</p>\[T = XW
+\]<p>把数据变换到新的坐标系统后，使得第一主成分描述的是最大方差的方向，第二主成分是第二大方差的方向，以此类推。</p><p>对于每个主成分有：\(t_{k(i)} = x_{i} \cdot w_{(k)}\)。</p><p>为了使得方差最大化，第一个权重向量 \(w_1\) 应该满足：</p>\[\begin{align*} \\
+ w_{(1)}
+ & = \underset{\Vert \mathbf{w} \Vert = 1}{\arg \max} \{ \sum(t_1)^2_{(i)}\} \\
+ & = \underset{\Vert \mathbf{w} \Vert = 1}{\arg \max} \{ \sum(x_{(i)}\cdot w)^2\} \\
+ & = \underset{\Vert \mathbf{w} \Vert = 1}{\arg \max} \{{\Vert Xw \Vert}^2\} \\
+ & = \underset{\Vert \mathbf{w} \Vert = 1}{\arg \max} \{ w^TX^TXw \} \\\\
+\end{align*}
+\]<p>当 \(w_{(1)}\) 为单位向量时，</p>\[w_{(1)} = \arg \max \left\{ \frac{w^TX^TXw}{w^Tw} \right\}
+\]<p><strong>瑞利商（Rayleigh quotient）</strong>的定义是：</p>\[R(M, x) = \frac{x^*Mx} {x^*x}
+\]<p>如果 \(M\) 矩阵是一个 Hermitian 矩阵，实数范围内就是对称矩阵，那么有 \(R(M, x) \in [\lambda_{min}, \lambda_{max}]\)，如果取最大值，则 \(x\) 为最大的特征值对应的一个特征向量。</p><p>所以 \(w_{(1)}\) 的就是 \(X^TX\) 的最大特征值所对应的特征向量，也就是 \(X\) 的最大奇异值在 \(V\) 中所对应的右奇异向量。</p><p>从 \(X\) 中减去前 \(k - 1\) 个主成分得到 \(\hat{X_k}\)。</p>\[\hat{X_k} = X - \sum_{s = 1}^{k - 1}Xw_{(s)}w_{(s)}^T
+\]\[w_{(k)} = \arg \max \left\{ \frac{w^T\hat{X_k}^T\hat{X_k}w}{w^Tw} \right\}
+\]<p>经过计算可以得出 \(\hat{X_k}^T\hat{X_k}\) 与 \(X^TX\) 的特征值及特征向量相同，可以得到 \(w_{(k)}\) 是 \(X^TX\) 第 \(k\) 大的特征值对应的特征向量。</p><p>最后可以写成：</p>\[T = XW
+\]<p>其中 \(W_{p \times p}\) 是权重矩阵，它的列向量是 \(X^TX\) 的特征向量，\(X\) 是一个 \(n \times p\) 的矩阵，\(n\) 可以代表实验次数，\(p\) 可以代表特征的个数。</p><p>可以只保留前 \(L\) 主成分，得到 \(T_L = X W_L\)，其中 \(T_L\) 是一个 \(n \times L\) 的矩阵，\(W_L\) 是一个 \(p \times L\) 的矩阵。</p><h3>将 SVD 用于 PCA</h3><p>将 \(X\) 做 SVD 得到 \(X = U\Sigma W^T\)，于是 \(T\) 可以写成：</p>\[\begin{align*}
+T
+&= XW \\
+&= U\Sigma W^TW \\
+&= U\Sigma
+\end{align*}
+\]<p>\(T\) 矩阵可以变成左奇异向量乘以对应的奇异值得到，这个叫做<strong>极分解（Polar decomposition）</strong>。</p><p>对于矩阵 \(A\)，如果取出 \(k\) 个最大的奇异值，得到 \(A_k\)。</p>\[A = U \Sigma V^T = \sigma_1u_1v_1^T + \dots + \sigma_ru_rv_r^T \\
+A_k = U_k \Sigma_k V_k^T = \sigma_1u_1v_1^T + \dots + \sigma_ku_kv_k^T
+\]<p><strong>Eckart–Young 定理</strong>：如果 \(B\) 矩阵的秩为 \(k\)，那么 \(\Vert A - B \Vert \ge \Vert A - A_k \Vert\)。</p><p>被截取的 \(n\times L\) 矩阵 \(T_L\) 可以通过获得 \(L\) 个最大的奇异值及其对应的奇异向量组成。</p>\[T_L = U_L\Sigma_L = X W_L
+\]<p>根据 Eckart–Young 定理，通过这种截断的奇异值分解得到的矩阵，\(T_L\) 或者 \(A_L\) 是最接近的原来矩阵的秩为 \(L\) 的矩阵。</p><p>[1] <a href="https://ocw.mit.edu/courses/mathematics/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/">Matrix Methods in Data Analysis, Signal Processing, and Machine Learning</a></p><p>[2] <a href="https://en.wikipedia.org/wiki/Principal_component_analysis">Principal component analysis</a></p><p>[3] <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition#Geometric_meaning">Singular value decomposition</a></p><p>[4] <a href="https://seanwangjs.github.io/2017/11/27/rayleigh-quotient-maximum.html">瑞利商与极值计算</a></p><p>[5] <a href="https://en.wikipedia.org/wiki/Rayleigh_quotient">Rayleigh quotient</a></p><a class="fill-link" href="/math/svd-pca"></a><div class="hide-article-box"></div></div><div class="markdown-body limit-height"><h1>一些小东西</h1><h3>Git 常用命令</h3><h4>取消 commit</h4><pre><code>git reset --hard HEAD~1
 git push --force
 </code></pre><h4>配置 Git 代理</h4><pre><code>git config --global http.proxy 'socks5://127.0.0.1:1080'
 git config --global https.proxy 'socks5://127.0.0.1:1080'
@@ -128,190 +330,4 @@ sips -z 512 512   pic.png --out tmp.iconset/icon_512x512.png
 sips -z 1024 1024   pic.png --out tmp.iconset/icon_512x512@2x.png
 iconutil -c icns tmp.iconset -o icon.icns
 rm -rf tmp.iconset
-</code></pre><a class="fill-link" href="/misc/tips"></a><div class="hide-article-box"></div></div><div class="markdown-body limit-height"><h1>类与对象</h1><h3>数据的抽象</h3><p>类的基本思想是数据抽象和封装。</p><blockquote><p>数据抽象是一种依赖于 接口和实现 分离的编程技术。</p></blockquote><p>接口包括用户所能执行的操作；类的实现则包括类的数据成员，负责接口实现的函数体以及定义类所需的各种私有函数。</p><blockquote><p>封装实现了类的接口与实现的分离。</p></blockquote><p>封装后的类隐藏了它的实现细节，也就是无法通过接口去访问实现部分。</p><p>在C++ 中抽象数据类型(abstract data type) 的定义可以用 class 和 struct 来定义。但是他们两个区别仅仅在于 默认的数据访问权限。（struct 默认为 public, class 默认为 private）。</p><p><!--more--></p><h3>成员函数</h3><p>先定义一个 Book 类</p><pre><code>struct Book {
-    std::string name;
-    std::string book_no;
-
-    std::string isbn();
-}
-
-std::string Book::isbn() {
-    return book_no;
-};
-
-</code></pre><p>其中 isbn 成员函数是在类的体内<code>声明</code>，在类的体外<code>定义</code>。Book 类本身是一个作用于，所以定义 isbn 的时候，要加上 <code>Book::</code> 表示是在 类作用域中。</p><p>成员函数通过一个名为 <code>this</code> 的额外的隐式参数来访问调用它的那个对象。</p><pre><code>// 类似于这样
-std::string isbn(Book* this);
-</code></pre><pre><code>class Book {
-    std::string name;
-    std::string book_no;
-public:
-    std::string isbn() const {
-        return book_no;
-    }
-};
-</code></pre><p>这里的 isbn 在类的体内声明并且定义，并且加上了一个 <code>const</code> 修饰符。<code>const</code> 修改了隐式 this 指针的类型。所以成员函数中不能修改数据成员。</p><p>这个<code>const</code> 也很重要，比如在使用标准库中的 <code>set</code>时应该这么定义，</p><pre><code>struct Node {
-    int v;
-    // 重载 < 运算是必须的。因为 set 内部实现是红黑树，要用到 <
-    // 第二个 const 也是必须的。
-    bool operator < (const Node &rhs) const {
-        return v < rhs.v;
-    }
-};
-
-// 创建一个 set 类型的 数据。
-set<Node> data;
-</code></pre><h3>构造函数</h3><p>注意：C++编译器<code>只有</code>在用户没有定义<code>任何</code>构造函数的时候，才默认生成一个无参的构造函数。</p><pre><code>class Data {
-    int id;
-public:
-    // C++ 11 中表示使用默认的构造函数。
-    Data() = default;
-
-    // 初始值列表
-    Data(int id) : id(id * id) {
-        cout << "new data" << endl;
-    }
-
-    // 拷贝构造函数
-    Date(const Data &data) {
-        this->id = data.id;
-    }
-};
-</code></pre><p>下面主要对拷贝构造函数进行讨论：</p><pre><code>// 当调用 test1 时，形参的初始化需要调用拷贝构造函数
-void test1(Data d);
-
-// 调用 test2 的过程
-// 1. 先传递引用给 d。     --- 不调用拷贝构造函数
-// 2. 将 d 的值拷贝给 tmp。--- 调用拷贝构造函数
-// 3. 将 tmp 作为返回值返回过去。--- 拷贝构造函数?
-// 3. 对于第三步（tmp很特殊） C++ 11 做了优化（RVO）不会进行拷贝。
-// Return Value Optimization (RVO)
-
-Data test2(const Data &d) {
-    Data tmp = d;
-    return tmp;
-}
-
-// 毫无疑问 test3 在第三步也是会拷贝的。
-// 有兴趣的可以去找关于RVO的资料，详细看看。
-Data test3(const Data &d) {
-    Data *tmp = new Data(d);
-    return *tmp;
-}
-</code></pre><h3>隐式类类型转换</h3><pre><code>#include <iostream>
-using namespace std;
-
-struct Data {
-    string val;
-    Data(string v) : val(v) {}
-
-    Data (istream &in) {
-        in >> val;
-    }
-};
-
-void test(Data d) {
-    cout << d.val << endl;
-}
-
-int main() {
-    // 下面 注释掉的是正常的调用构造函数去实例化对象。
-    // 大家都知道就不多说。
-    // Data d1(cin);
-    // Data d2("12");
-    // test(d1); test(d2);
-
-    // 这里传入的参数是 istream
-    // 而不是 test 的形式参数 Data
-    test(cin);
-
-    // 这里传入的参数是 string
-    test((string)"abcd");
-    // 下面的会报错
-    // 因为 要隐式 "abcd" -> string -> Data
-    // 要使用两种隐式转换才能转换。所以不行
-    // test("abcd");
-}
-</code></pre><p>有时候并不需要这种隐式转换，这时候应该在类的构造函数前面加上 <code>explicit</code> 修饰符。（只对一个参数的构造函数有效）</p><h3>聚合类</h3><p>聚合类的定义：</p><ul><li>所有成员都是 public</li><li>没有定义任何构造函数</li><li>没有类内初始值</li><li>没有基类，也没有 virtual 函数。</li></ul><p>比如下面这个：</p><pre><code>// 这是一个非常常用的邻接表Edge 的结构体
-struct Edge {
-    int v, next;
-    double d;
-};
-
-void test() {
-    // 可以这样子进行初始化。
-    // 初始值的顺序应该和声明的顺序一致。
-    Edge e = {1, 3, 2.2};
-}
-</code></pre><h3>友元函数</h3><p>类可以允许其他类或者函数访问他的非公有数据成员，可以在这个类的体内 加上一个用 <code>friend</code> 修饰的类或者函数的声明。</p><pre><code>class Test;
-
-class Num {
-    // 添加有 friend 的声明。
-    friend class Test;
-    friend int getNum(Num &num);
-    // 友元函数可以在类的内部定义。
-    // 但是外部也要有函数的声明。
-    /* friend int getNum(Num &num) {
-        return num.val;
-    }; */
-
-    int val;
-public:
-    Num(int val) : val(val) {}
-};
-
-// 友元类定义
-class Test {
-public:
-    int getNum(Num &num) {
-        return num.val;
-    }
-};
-
-// 也可以在外部
-// 注意：友元函数getNum 并不属于Num类。
-int getNum(Num &num) {
-    return num.val;
-};
-
-#include <iostream>
-
-using namespace std;
-
-int main() {
-    Num num(1);
-    Test t;
-    cout << t.getNum(num) << endl;
-    cout << getNum(num) << endl;
-}
-</code></pre><h3>静态成员</h3><p>可以在成员前面加上 <code>static</code> 关键字，来声明静态成员。</p><p>要注意几点：</p><ul><li>静态成员函数只能访问静态成员。</li><li>静态成员的定义一般放在类定义外面。</li></ul><p>用来记录类被实例化几次的示例已经很古老而且没有新意。所以这里举出另一个关于静态成员的应用：</p><p>单例设计模式。（私有化构造函数，使得类实例化出的对象只有一个）</p><pre><code>#include <iostream>
-using namespace std;
-
-struct Node {
-private:
-    Node(int n) : val(n) {}
-
-public:
-    int val;
-    // 声明的时候不进行初始化
-    // static Node * one = nullptr; // 错误
-    static Node * one;
-    static Node * instance() {
-        if (one == nullptr) {
-            one = new Node(0);
-        }
-        return one;
-    }
-};
-
-// 一般要在全局这里进行定义，初始化。
-Node* Node::one = nullptr;
-
-int main() {
-    Node *p1 = Node::instance();
-    Node *p2 = Node::instance();
-    Node *p3 = Node::instance();
-    cout << (p1 == p2) << endl;
-    cout << (p2 == p3) << endl;
-    // 结果 p1, p2 ,p3 都相等
-}
-</code></pre><p>[1] Lippman S B. C++ Primer[M]. Pearson Education India, 2005.</p><p>[2] <a href="https://www.ibm.com/developerworks/community/blogs/5894415f-be62-4bc0-81c5-3956e82276f3/entry/RVO_V_S_std_move?lang=zh">关于RVO和std move的一篇文章</a></p><a class="fill-link" href="/code/cpp/class-and-object"></a><div class="hide-article-box"></div></div></article></body></html>
+</code></pre><a class="fill-link" href="/misc/tips"></a><div class="hide-article-box"></div></div></article></body></html>
