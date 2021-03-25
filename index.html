@@ -41,7 +41,16 @@
         </nav>
     </div>
 </header>
-<article class="homepage-body"><div class="markdown-body limit-height"><h1>常见层结构</h1><p>所有向量默认指的是列向量，并且记 \(A_i \in \mathbb R^m\) 表示矩阵 \(A\in \mathbb R^{m \times n}\) 的第 \(i\) 个列向量，第 \(j\) 个行元素组成的向量（不是行向量，所以维度并不是 \(\mathbb R^{1\times n}\)）表示为 \((A^T)_j \in \mathbb R^n\)。</p><h3>Affine 层</h3><h4>公式</h4>\[\begin{aligned}
+<article class="homepage-body"><div class="markdown-body limit-height"><h1>小米 4A 千兆版刷机</h1><h2>软件刷机</h2><p>教程可以参考这个 <a href="https://www.right.com.cn/forum/thread-4007071-1-1.html">小米4A千兆版 NO拆机</a></p><p>但是我一直无法访问进去，telnet 192.168.1.1 一直是拒绝访问。原因是 GitHub 在国内访问不稳定，该下载东西无法下载。</p><h3>预先下载文件</h3><p>下载好这两个文件，<a href="https://github.com/acecilia/OpenWRTInvasion/raw/master/script_tools/dropbearStaticMipsel.tar.bz2">dropbearStaticMipsel.tar.bz2</a>、<a href="https://github.com/acecilia/OpenWRTInvasion/raw/master/script_tools/busybox-mipsel">busybox-mipsel</a></p><h3>建立文件共享服务器</h3><p>如果是 macOS：</p><pre><code># cd 到文件所在目录运行这个，比如 cd ~/Download
+sudo python -m SimpleHTTPServer 80 
+</code></pre><p>如果是 Windows：</p><p>据说可以用 <a href="http://iscute.cn/tar/chfs/2.0/gui-chfs-windows.zip">chfs</a> 来实现类似功能</p><h3>修改 <code>script.sh</code> 文件</h3><p>假设电脑的 ip 是 192.168.31.8，将 OpenWRTInvasion 里面的 <code>script.sh</code> 中 <code>https://github.com/acecilia/OpenWRTInvasion/raw/master/script_tools/</code> 改成 <code>http://192.168.31.8/</code>。</p><p>里面代码变成这样。</p><pre><code>curl -L "http://192.168.31.8/busybox-mipsel" --insecure --output busybox
+curl -L "http://192.168.31.8/dropbearStaticMipsel.tar.bz2" --output dropbear.tar.bz2
+</code></pre><h3>执行</h3><p>然后再执行 <code>python remote_command_execution_vulnerability.py</code>，这时候再 telnet 就可以了。</p><h2>编程器刷机（救砖）</h2><p>不小心路由器成砖了。于是买编程器进行刷机。（之前备份过 eeprom）</p><p>拆开路由器（螺丝在贴纸下面），找到 Flash。</p><blockquote><p>芯片是分正反的，芯片上右上角有一个凹槽，来指示位置。</p></blockquote><p><img src="/asset/xiaomi-4a-gigabit-flash-rom/flash.png" width = "60%" height = "60%" alt="flash"/></p><p>淘宝买了 CH341A 带夹子的那种。</p><ol><li>按照下图红框内的图示安装好这个芯片，小米 4A 是 25 系芯片，所以安装在图中下面的槽中。</li></ol><p><img src="/asset/xiaomi-4a-gigabit-flash-rom/programmer.png" width = "60%" height = "60%" alt="programmer"/></p><p>圈住的部分对应芯片上的凹槽位置，用来确定正反。</p><p><img src="/asset/xiaomi-4a-gigabit-flash-rom/1position.png" width = "60%" height = "60%" alt="1position"/></p><ol><li>按照图示安装架子。</li></ol><p><img src="/asset/xiaomi-4a-gigabit-flash-rom/connect.png" width = "60%" height = "60%" alt="connect"/></p><ol><li>用夹子夹住Flash芯片，红线应该对应芯片上凹槽所在的位置。</li></ol><p>连接到电脑上（据说要连到 USB3.0接口上）</p><ol><li>利用 Windows 虚拟机刷到一半刷机程序未响应，所以直接用命令行进行烧录。</li></ol><p>我用的 macOS，如果是 Linux 应该也一样。先去下载 <a href="https://breed.hackpascal.net/breed-mt7621-pbr-m1.bin">breed-mt7621-pbr-m1.bin</a>。</p><pre><code># brew install truncate
+# brew install flashrom
+
+truncate -s +16670883 breed-mt7621-pbr-m1.bin
+flashrom --programmer ch341a_spi -c "W25Q128.V" --write breed-mt7621-pbr-m1.bin
+</code></pre><p>运行完命令，breed 就刷好了。救砖成功！</p><p>[1] <a href="https://www.right.com.cn/forum/thread-4007071-1-1.html">小米4A千兆版 NO拆机</a></p><p>[2] <a href="https://forum.openwrt.org/t/xiaomi-wifi-router-3g-v2/42584/46">Xiaomi WiFi Router 3G V2</a></p><p>[3] <a href="https://www.right.com.cn/forum/thread-3161868-1-1.html">小米路由器4A千兆版（R4A）之编程器刷机</a></p><p>[4] <a href="https://www.right.com.cn/forum/thread-3908050-1-1.html">小米路由器4A千兆版编程器刷入PandoraBox</a></p><a class="fill-link" href="/misc/xiaomi-4a-gigabit-flash-rom"></a><div class="hide-article-box"></div></div><div class="markdown-body limit-height"><h1>常见层结构</h1><p>所有向量默认指的是列向量，并且记 \(A_i \in \mathbb R^m\) 表示矩阵 \(A\in \mathbb R^{m \times n}\) 的第 \(i\) 个列向量，第 \(j\) 个行元素组成的向量（不是行向量，所以维度并不是 \(\mathbb R^{1\times n}\)）表示为 \((A^T)_j \in \mathbb R^n\)。</p><h3>Affine 层</h3><h4>公式</h4>\[\begin{aligned}
     Y &= XW + B \\
     Y_{i,l} &= \sum_k W_{k,l} X_{i,k} + b_l \\
 \end{aligned}
@@ -270,64 +279,4 @@ T
 \]<p>\(T\) 矩阵可以变成左奇异向量乘以对应的奇异值得到，这个叫做<strong>极分解（Polar decomposition）</strong>。</p><p>对于矩阵 \(A\)，如果取出 \(k\) 个最大的奇异值，得到 \(A_k\)。</p>\[A = U \Sigma V^T = \sigma_1u_1v_1^T + \dots + \sigma_ru_rv_r^T \\
 A_k = U_k \Sigma_k V_k^T = \sigma_1u_1v_1^T + \dots + \sigma_ku_kv_k^T
 \]<p><strong>Eckart–Young 定理</strong>：如果 \(B\) 矩阵的秩为 \(k\)，那么 \(\Vert A - B \Vert \ge \Vert A - A_k \Vert\)。</p><p>被截取的 \(n\times L\) 矩阵 \(T_L\) 可以通过获得 \(L\) 个最大的奇异值及其对应的奇异向量组成。</p>\[T_L = U_L\Sigma_L = X W_L
-\]<p>根据 Eckart–Young 定理，通过这种截断的奇异值分解得到的矩阵，\(T_L\) 或者 \(A_L\) 是最接近的原来矩阵的秩为 \(L\) 的矩阵。</p><p>[1] <a href="https://ocw.mit.edu/courses/mathematics/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/">Matrix Methods in Data Analysis, Signal Processing, and Machine Learning</a></p><p>[2] <a href="https://en.wikipedia.org/wiki/Principal_component_analysis">Principal component analysis</a></p><p>[3] <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition#Geometric_meaning">Singular value decomposition</a></p><p>[4] <a href="https://seanwangjs.github.io/2017/11/27/rayleigh-quotient-maximum.html">瑞利商与极值计算</a></p><p>[5] <a href="https://en.wikipedia.org/wiki/Rayleigh_quotient">Rayleigh quotient</a></p><a class="fill-link" href="/math/svd-pca"></a><div class="hide-article-box"></div></div><div class="markdown-body limit-height"><h1>一些小东西</h1><h3>Git 常用命令</h3><h4>取消 commit</h4><pre><code>git reset --hard HEAD~1
-git push --force
-</code></pre><h4>配置 Git 代理</h4><pre><code>git config --global http.proxy 'socks5://127.0.0.1:1080'
-git config --global https.proxy 'socks5://127.0.0.1:1080'
-</code></pre><h3>在 vscode 中配置 LaTex</h3><p><!--more--></p><pre><code>  "latex-workshop.latex.recipes": [
-    {
-      "name": "xelatex",
-      "tools": [
-        "xelatex"
-      ]
-    },
-  ],
-  "latex-workshop.latex.tools": [
-    {
-      "name": "xelatex",
-      "command": "xelatex",
-      "args": [
-        "-synctex=1",
-        "-interaction=nonstopmode",
-        "-file-line-error",
-        "%DOC%"
-      ]
-    }
-  ],
-  "latex-workshop.view.pdf.viewer": "tab",
-  "latex-workshop.latex.autoClean.run": "onBuilt",
-</code></pre><p>测试文档</p><pre><code>\documentclass{article}
-% \documentclass[a4paper]{report}
-% \usepackage[margin=2cm]{geometry}
-% \renewcommand{\thesection}{\arabic{section}}
-
-\usepackage{ctex}
-
-\author{OYMiss}
-\title{HelloWorld}
-\begin{document}
-\maketitle
-
-\section{Test}
-$$
-\int^{\infty}_{0}{x^ne^{-x}} \mathrm{d}x = n!
-$$
-
-\end{document}
-
-</code></pre><h3>在 macOS 上读写 NTFS 硬盘</h3><p>在 <code>/etc/fstab</code> 中添加下面内容，没有的话新建一个。</p><pre><code>LABEL=硬盘名称 none ntfs rw,auto,nobrowse
-</code></pre><p>重新加载，然后打开 <code>/Volumes</code> 就可以看到，也可以用下面命令创建一个快捷方式。</p><pre><code>sudo ln -s /Volumes ~/Desktop/Volumes
-</code></pre><h3>在 macOS 上将 PNG 图标转为 ICNS 图标</h3><p>macOS 上有些应用的图标太丑，如果想要更换 macOS 上应用的图标，需要有一个 ICNS 类型的图标，然后打开应用详情把图标放在原来的图标上就可以了。</p><p>下面命令将当前文件夹的 <code>pic.png</code> 转化为 <code>icon.icns</code>。</p><pre><code>mkdir tmp.iconset
-sips -z 16 16     pic.png --out tmp.iconset/icon_16x16.png
-sips -z 32 32     pic.png --out tmp.iconset/icon_16x16@2x.png
-sips -z 32 32     pic.png --out tmp.iconset/icon_32x32.png
-sips -z 64 64     pic.png --out tmp.iconset/icon_32x32@2x.png
-sips -z 128 128   pic.png --out tmp.iconset/icon_128x128.png
-sips -z 256 256   pic.png --out tmp.iconset/icon_128x128@2x.png
-sips -z 256 256   pic.png --out tmp.iconset/icon_256x256.png
-sips -z 512 512   pic.png --out tmp.iconset/icon_256x256@2x.png
-sips -z 512 512   pic.png --out tmp.iconset/icon_512x512.png
-sips -z 1024 1024   pic.png --out tmp.iconset/icon_512x512@2x.png
-iconutil -c icns tmp.iconset -o icon.icns
-rm -rf tmp.iconset
-</code></pre><a class="fill-link" href="/misc/tips"></a><div class="hide-article-box"></div></div></article></body></html>
+\]<p>根据 Eckart–Young 定理，通过这种截断的奇异值分解得到的矩阵，\(T_L\) 或者 \(A_L\) 是最接近的原来矩阵的秩为 \(L\) 的矩阵。</p><p>[1] <a href="https://ocw.mit.edu/courses/mathematics/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/">Matrix Methods in Data Analysis, Signal Processing, and Machine Learning</a></p><p>[2] <a href="https://en.wikipedia.org/wiki/Principal_component_analysis">Principal component analysis</a></p><p>[3] <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition#Geometric_meaning">Singular value decomposition</a></p><p>[4] <a href="https://seanwangjs.github.io/2017/11/27/rayleigh-quotient-maximum.html">瑞利商与极值计算</a></p><p>[5] <a href="https://en.wikipedia.org/wiki/Rayleigh_quotient">Rayleigh quotient</a></p><a class="fill-link" href="/math/svd-pca"></a><div class="hide-article-box"></div></div></article></body></html>

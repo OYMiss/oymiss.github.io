@@ -1,0 +1,53 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>小米 4A 千兆版刷机</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="/style/style.css"></head><body>
+<header class="header" id="header">
+    <div class="header-wrapper">
+        <div class="logo">
+            <h1><a href="/">OY's Home</a></h1>
+        </div>
+        <nav class="main-nav">
+            <ul class="menu">
+                <li class="menu-item">
+                    <a href="/" id="home">
+                        <span class="base-name">
+                            Home
+                        </span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/archives" id="archives">
+                        <span class="base-name">
+                            Archives
+                        </span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/categories" id="categories">
+                        <span class="base-name">
+                            Categories
+                        </span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="/about" id="about">
+                        <span class="base-name">
+                            About
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<article class="markdown-body"><h1>小米 4A 千兆版刷机</h1><h2>软件刷机</h2><p>教程可以参考这个 <a href="https://www.right.com.cn/forum/thread-4007071-1-1.html">小米4A千兆版 NO拆机</a></p><p>但是我一直无法访问进去，telnet 192.168.1.1 一直是拒绝访问。原因是 GitHub 在国内访问不稳定，该下载东西无法下载。</p><h3>预先下载文件</h3><p>下载好这两个文件，<a href="https://github.com/acecilia/OpenWRTInvasion/raw/master/script_tools/dropbearStaticMipsel.tar.bz2">dropbearStaticMipsel.tar.bz2</a>、<a href="https://github.com/acecilia/OpenWRTInvasion/raw/master/script_tools/busybox-mipsel">busybox-mipsel</a></p><h3>建立文件共享服务器</h3><p>如果是 macOS：</p><pre><code># cd 到文件所在目录运行这个，比如 cd ~/Download
+sudo python -m SimpleHTTPServer 80 
+</code></pre><p>如果是 Windows：</p><p>据说可以用 <a href="http://iscute.cn/tar/chfs/2.0/gui-chfs-windows.zip">chfs</a> 来实现类似功能</p><h3>修改 <code>script.sh</code> 文件</h3><p>假设电脑的 ip 是 192.168.31.8，将 OpenWRTInvasion 里面的 <code>script.sh</code> 中 <code>https://github.com/acecilia/OpenWRTInvasion/raw/master/script_tools/</code> 改成 <code>http://192.168.31.8/</code>。</p><p>里面代码变成这样。</p><pre><code>curl -L "http://192.168.31.8/busybox-mipsel" --insecure --output busybox
+curl -L "http://192.168.31.8/dropbearStaticMipsel.tar.bz2" --output dropbear.tar.bz2
+</code></pre><h3>执行</h3><p>然后再执行 <code>python remote_command_execution_vulnerability.py</code>，这时候再 telnet 就可以了。</p><h2>编程器刷机（救砖）</h2><p>不小心路由器成砖了。于是买编程器进行刷机。（之前备份过 eeprom）</p><p>拆开路由器（螺丝在贴纸下面），找到 Flash。</p><blockquote><p>芯片是分正反的，芯片上右上角有一个凹槽，来指示位置。</p></blockquote><p><img src="/asset/xiaomi-4a-gigabit-flash-rom/flash.png" width = "60%" height = "60%" alt="flash"/></p><p>淘宝买了 CH341A 带夹子的那种。</p><ol><li>按照下图红框内的图示安装好这个芯片，小米 4A 是 25 系芯片，所以安装在图中下面的槽中。</li></ol><p><img src="/asset/xiaomi-4a-gigabit-flash-rom/programmer.png" width = "60%" height = "60%" alt="programmer"/></p><p>圈住的部分对应芯片上的凹槽位置，用来确定正反。</p><p><img src="/asset/xiaomi-4a-gigabit-flash-rom/1position.png" width = "60%" height = "60%" alt="1position"/></p><ol><li>按照图示安装架子。</li></ol><p><img src="/asset/xiaomi-4a-gigabit-flash-rom/connect.png" width = "60%" height = "60%" alt="connect"/></p><ol><li>用夹子夹住Flash芯片，红线应该对应芯片上凹槽所在的位置。</li></ol><p>连接到电脑上（据说要连到 USB3.0接口上）</p><ol><li>利用 Windows 虚拟机刷到一半刷机程序未响应，所以直接用命令行进行烧录。</li></ol><p>我用的 macOS，如果是 Linux 应该也一样。先去下载 <a href="https://breed.hackpascal.net/breed-mt7621-pbr-m1.bin">breed-mt7621-pbr-m1.bin</a>。</p><pre><code># brew install truncate
+# brew install flashrom
+
+truncate -s +16670883 breed-mt7621-pbr-m1.bin
+flashrom --programmer ch341a_spi -c "W25Q128.V" --write breed-mt7621-pbr-m1.bin
+</code></pre><p>运行完命令，breed 就刷好了。救砖成功！</p><p>[1] <a href="https://www.right.com.cn/forum/thread-4007071-1-1.html">小米4A千兆版 NO拆机</a></p><p>[2] <a href="https://forum.openwrt.org/t/xiaomi-wifi-router-3g-v2/42584/46">Xiaomi WiFi Router 3G V2</a></p><p>[3] <a href="https://www.right.com.cn/forum/thread-3161868-1-1.html">小米路由器4A千兆版（R4A）之编程器刷机</a></p><p>[4] <a href="https://www.right.com.cn/forum/thread-3908050-1-1.html">小米路由器4A千兆版编程器刷入PandoraBox</a></p></article></body></html>
