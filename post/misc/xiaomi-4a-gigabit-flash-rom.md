@@ -56,7 +56,9 @@ curl -L "http://192.168.31.8/dropbearStaticMipsel.tar.bz2" --output dropbear.tar
 
 淘宝买了 CH341A 带夹子的那种。
 
-1. 按照下图红框内的图示安装好这个芯片，小米 4A 是 25 系芯片，所以安装在图中下面的槽中。
+### 组装编程器和架子
+
+按照下图红框内的图示安装好这个芯片，小米 4A 是 25 系芯片，所以安装在图中下面的槽中。
 
 <img src="/asset/xiaomi-4a-gigabit-flash-rom/programmer.png" width = "60%" height = "60%" alt="programmer"/>
 
@@ -64,15 +66,17 @@ curl -L "http://192.168.31.8/dropbearStaticMipsel.tar.bz2" --output dropbear.tar
 
 <img src="/asset/xiaomi-4a-gigabit-flash-rom/1position.png" width = "60%" height = "60%" alt="1position"/>
 
-2. 按照图示安装架子。
+按照图示安装架子。
 
 <img src="/asset/xiaomi-4a-gigabit-flash-rom/connect.png" width = "60%" height = "60%" alt="connect"/>
 
-3. 用夹子夹住Flash芯片，红线应该对应芯片上凹槽所在的位置。
+### 烧录
+
+用夹子夹住Flash芯片，红线应该对应芯片上凹槽所在的位置。
 
 连接到电脑上（据说要连到 USB3.0接口上）
 
-4. 利用 Windows 虚拟机刷到一半刷机程序未响应，所以直接用命令行进行烧录。
+利用 Windows 虚拟机刷到一半刷机程序未响应，所以直接用命令行进行烧录。
 
 我用的 macOS，如果是 Linux 应该也一样。先去下载 [breed-mt7621-pbr-m1.bin](https://breed.hackpascal.net/breed-mt7621-pbr-m1.bin)。
 
