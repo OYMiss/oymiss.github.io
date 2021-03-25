@@ -52,21 +52,21 @@ curl -L "http://192.168.31.8/dropbearStaticMipsel.tar.bz2" --output dropbear.tar
 
 > 芯片是分正反的，芯片上右上角有一个凹槽，来指示位置。
 
-![flash](/asset/xiaomi-4a-gigabit-flash-rom/flash.png)
+<img src="/asset/xiaomi-4a-gigabit-flash-rom/flash.png" width = "60%" height = "60%" alt="flash"/>
 
 淘宝买了 CH341A 带夹子的那种。
 
 1. 按照下图红框内的图示安装好这个芯片，小米 4A 是 25 系芯片，所以安装在图中下面的槽中。
 
-![programmer](/asset/xiaomi-4a-gigabit-flash-rom/programmer.png)
+<img src="/asset/xiaomi-4a-gigabit-flash-rom/programmer.png" width = "60%" height = "60%" alt="programmer"/>
 
 圈住的部分对应芯片上的凹槽位置，用来确定正反。
 
-![1position](/asset/xiaomi-4a-gigabit-flash-rom/1position.png)
+<img src="/asset/xiaomi-4a-gigabit-flash-rom/1position.png" width = "60%" height = "60%" alt="1position"/>
 
 2. 按照图示安装架子。
 
-![connect](/asset/xiaomi-4a-gigabit-flash-rom/connect.png)
+<img src="/asset/xiaomi-4a-gigabit-flash-rom/connect.png" width = "60%" height = "60%" alt="connect"/>
 
 3. 用夹子夹住Flash芯片，红线应该对应芯片上凹槽所在的位置。
 
