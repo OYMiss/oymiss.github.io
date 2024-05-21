@@ -1,6 +1,6 @@
 ---
 author: Chongzhuo Yang
-pubDatetime: 2019-08-04T01:37:37.816Z
+pubDatetime: 2019-08-04 09:37:37
 title: 矩阵的广义逆
 slug: "pseudo-inverse"
 # featured: false

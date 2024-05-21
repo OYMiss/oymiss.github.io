@@ -1,7 +1,7 @@
 ---
 author: Chongzhuo Yang
 title: 小米 4A 千兆版刷机
-pubDatetime: 2021-03-25 05:00:00
+pubDatetime: 2021-03-25 13:01:00
 tags:
   - misc
 slug: "xiaomi-4a-gigabit-flash-rom"

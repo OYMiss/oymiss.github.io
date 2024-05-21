@@ -1,6 +1,6 @@
 ---
 author: Chongzhuo Yang
-pubDatetime: 2019-08-05T12:07:12.816Z
+pubDatetime: 2019-08-05 20:07:12
 title: 奇异值分解与主成分分析
 slug: "svd-pca"
 # featured: false

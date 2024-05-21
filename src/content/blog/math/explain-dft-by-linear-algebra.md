@@ -1,6 +1,6 @@
 ---
 author: Chongzhuo Yang
-pubDatetime: 2019-08-31 02:01:29
+pubDatetime: 2019-08-31 10:01:29
 title: 用线性代数的眼光来看离散傅立叶变换
 slug: "explain-dft-by-linear-algebra"
 # featured: false
