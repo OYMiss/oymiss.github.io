@@ -23,13 +23,14 @@ const socialCount = SOCIALS.filter(social => social.active).length;
   <Header />
   <main id="main-content">
     <section id="hero">
-      <h1>Hi there 👋</h1>
+      <h1>Hi there<i class="oma-lg oma oma-waving-hand-light-skin-tone"></i></h1>
       <a
         target="_blank"
         href="/rss.xml"
         class="rss-link"
         aria-label="rss feed"
         title="RSS Feed"
+        style="margin-left: -0.8em;"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="rss-icon"
           ><path
@@ -50,7 +51,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
         >
           Cheng Li
         </LinkButton>
-        . Currently, my interests primarily focus on ML/AI systems 🤖.
+        . Currently, my interests primarily focus on ML/AI systems<i class="oma-bg oma oma-robot" style="margin-bottom:-0.2em;"></i>.
       </p>
       <p>
         Previously, I had the privilege of working as a research intern with
@@ -61,7 +62,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
         >
           Zhichao Cao
         </LinkButton>
-        at Arizona State University, where I explored system design on ZNS SSDs 📦.
+        at Arizona State University, where I explored system design on ZNS SSDs<i class="oma-bg oma oma-package" style="margin-bottom:-0.2em;"></i>.
       </p>
       {
         // only display if at least one social link is enabled
