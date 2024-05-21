@@ -73,7 +73,7 @@ $$
 w_{(1)} = \arg \max \left\{ \frac{w^TX^TXw}{w^Tw} \right\}
 $$
 
-**瑞利商（Rayleigh quotient）**的定义是：
+**瑞利商（Rayleigh quotient）** 的定义是：
 
 $$
 R(M, x) = \frac{x^*Mx} {x^*x}
