@@ -78,6 +78,30 @@ const socialCount = SOCIALS.filter(social => social.active).length;
     <Hr />
 
     {
+    <section id="news">
+          <h2>News</h2>
+          <ul style="padding-top: 1rem">
+            <li>
+            [Jun 02, 2024] 
+            Our position paper <i>Can ZNS SSDs be Better Storage Devices for Persistent Cache?</i> has been accepted by HotStorage '24.
+            </li>
+            <li>
+            [May 13, 2024]
+            I have joined the
+            <LinkButton
+              className="underline decoration-dashed underline-offset-4 hover:text-skin-accent"
+              href="https://adsl.ustc.edu.cn/main.htm"
+            >
+            ADSLab
+            </LinkButton>
+            at USTC.
+            </li>
+          </ul>
+    </section>
+    }
+    <Hr />
+
+    {
       featuredPosts.length > 0 && (
         <>
           <section id="featured">
@@ -157,10 +181,12 @@ const socialCount = SOCIALS.filter(social => social.active).length;
   }
 
   /* ===== Featured & Recent Posts Sections ===== */
+  #news,
   #featured,
   #recent-posts {
-    @apply pb-6 pt-12;
+    @apply pb-6 pt-6;
   }
+  #news h2,
   #featured h2,
   #recent-posts h2 {
     @apply text-2xl font-semibold tracking-wide;
