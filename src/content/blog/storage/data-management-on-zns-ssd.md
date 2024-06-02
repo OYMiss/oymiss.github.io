@@ -13,10 +13,10 @@ description: A guide to designing a high-performance management layer for data I
 There are requirements of writing data to zones of ZNS SSDs.
 
 1. Data can only be written at the write pointer.
-2. Write pointer can be increased and reset by `append` and `reset`.
-3. There is the limitation of maxinum number of open and active zones.
+2. Write pointers can be increased and reset by `append` and `reset`.
+3. There is the limitation of maximum number of open and active zones.
 
-> A closed zone is not a open zone but it is still an active zone. The `finish` can used to make zones inactive.
+> A closed zone is not an open zone but it is still an active zone. The `finish` can be used to make zones inactive.
 
 ## I/O Control
 
@@ -40,7 +40,7 @@ In this guide, we use the simplest data layout, where all data units have the sa
 
 ### Parallel Control
 
-One thread can allocate a zone in the waiting group for exclusive writing. After that, the zone will be transfered into the writing group and further writes of the zone do not need locks. The states of the zone group are controlled using a mutex lock (called `#group-lock`). The number of active/open zones can be controlled in steps 1 and 4 using an simple counter.
+One thread can allocate a zone in the waiting group for exclusive writing. After that, the zone will be transferred into the writing group and further writes of the zone do not need locks. The states of the zone group are controlled using a mutex lock (called `#group-lock`). The number of active/open zones can be controlled in steps 1 and 4 using a simple counter.
 
 The mapping will be updated after writing data and accessed before reading data. Therefore, a mutex lock is also needed for mapping (called `#mapping-lock`).
 
@@ -50,11 +50,11 @@ To avoid deadlock, we should pay attention to the lock order of `#group-lock` an
 
 The zones in the finished group can be selected to reclaim invalid space resulting from data updates and deletions. The victim selection policy is an important design in ZNS SSDs. After selecting the victim zone, we will move valid data from the victim zone to the special GC zone reserved for the GC process.
 
-The victim zone's mapping may also be updated when moving its data. We ignore these updates during data copying, which may move more data but results in a simpler and more efficient GC design. After moving the data, we will check and update the mapping correctly. If the data moved is marked as invalid (by updates or deletes) during moving, we just abort the mapping upades. Otherwise, we will update the mapping with the new data offset.
+The victim zone's mapping may also be updated when moving its data. We ignore these updates during data copying, which may move more data but results in a simpler and more efficient GC design. After moving the data, we will check and update the mapping correctly. If the data moved is marked as invalid (by updates or deletes) during moving, we just abort the mapping updates. Otherwise, we will update the mapping with the new data offset.
 
 After moving all valid data, the victim zone should be reset and moved to the free group. However, since applications may still be reading from the victim zone, we need to introduce a new shared lock, `#read-lock`, to delay the reset operation.
 
-For delete, after we moved the data and want to update the mapping.  we check the mapping whether the data is updated. If the data is updated, we abort the updating. If not, we update the moved offset.
+For delete, after we moved the data and wanted to update the mapping.  we check the mapping whether the data is updated. If the data is updated, we abort the updating. If not, we update the moved offset.
 
 ## Control Flow
 
@@ -95,3 +95,5 @@ For delete, after we moved the data and want to update the mapping.  we check th
 14. unlock `#read-lock`.
 15. update group states.
 16. unlock `#group-lock` and `#mapping-lock`.
+
+
