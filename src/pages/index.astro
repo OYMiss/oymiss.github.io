@@ -43,26 +43,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
       </a>
 
       <p>
-        I am Chongzhuo Yang, a Ph.D student in the University of Science and
-        Technology of China (USTC), advised by Prof.
-        <LinkButton
-          className="underline decoration-dashed underline-offset-4 hover:text-skin-accent"
-          href="http://staff.ustc.edu.cn/~chengli7/"
-        >
-          Cheng Li
-        </LinkButton>
-        . Currently, my interests primarily focus on ML/AI systems<i class="oma-bg oma oma-robot" style="margin-bottom:-0.2em;"></i>.
-      </p>
-      <p>
-        Previously, I had the privilege of working as a research intern with
-        Prof.
-        <LinkButton
-          className="underline decoration-dashed underline-offset-4 hover:text-skin-accent"
-          href="https://search.asu.edu/profile/4082902"
-        >
-          Zhichao Cao
-        </LinkButton>
-        at Arizona State University, where I explored system design on ZNS SSDs<i class="oma-bg oma oma-package" style="margin-bottom:-0.2em;"></i>.
+      Welcome to my homepage!
       </p>
       {
         // only display if at least one social link is enabled
@@ -76,31 +57,6 @@ const socialCount = SOCIALS.filter(social => social.active).length;
     </section>
 
     <Hr />
-
-    {
-    <section id="news">
-          <h2>News</h2>
-          <ul style="padding-top: 1rem">
-            <li>
-            [Jun 02, 2024] 
-            Our position paper <i>Can ZNS SSDs be Better Storage Devices for Persistent Cache?</i> has been accepted by HotStorage '24.
-            </li>
-            <li>
-            [May 13, 2024]
-            I have joined the
-            <LinkButton
-              className="underline decoration-dashed underline-offset-4 hover:text-skin-accent"
-              href="https://adsl.ustc.edu.cn/main.htm"
-            >
-            ADSLab
-            </LinkButton>
-            at USTC.
-            </li>
-          </ul>
-    </section>
-    }
-    <Hr />
-
     {
       featuredPosts.length > 0 && (
         <>
